@@ -8,6 +8,18 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      colors: {
+        pallete: {
+          50: "#F1E5D1",
+          100: "#FFF2D7",
+          200: "#FFE0B5",
+          300: "#F8C794",
+          400: "#D8AE7E",
+          500: "#DBB5B5",
+          600: "#C39898",
+          700: "#987070",
+        },
+      },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
@@ -15,6 +27,10 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+
+  daisyui: {
+    themes: ["black"],
+  },
+  plugins: [require("daisyui")],
 };
 export default config;
