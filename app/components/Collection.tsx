@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 const Collection = () => {
@@ -21,16 +22,23 @@ const Collection = () => {
         <div className="py-16">
           <div className="grid grid-cols-4 gap-2 items-center container m-auto">
             {collections.map((image) => (
-              <div className="flex items-center flex-col">
-                <Image
-                  src={image.link}
-                  alt="collection-image"
-                  width={300}
-                  height={300}
-                  className="w-60 h-60 object-cover border border-zinc-900"
-                />
+              <div className="flex items-center flex-col cursor-pointer group">
+                <div className="overflow-hidden">
+                  <Image
+                    src={image.link}
+                    alt="collection-image"
+                    width={300}
+                    height={300}
+                    className="w-60 h-60 object-cover border border-zinc-900 group-hover:scale-110 transition-transform duration-700"
+                  />
+                </div>
                 <div className="text-center mt-4">
-                  <h3 className="text-sm text-zinc-500">{image.name}</h3>
+                  <Link
+                    href={"#"}
+                    className="text-sm text-zinc-500 group-hover:text-zinc-100 transition-colors duration-700"
+                  >
+                    {image.name}
+                  </Link>
                 </div>
               </div>
             ))}
