@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { CiSearch, CiShoppingCart } from "react-icons/ci";
+import { CiSearch } from "react-icons/ci";
+import ShoppingCartButton from "./ShoppingCartButton";
 
 const Navbar = () => {
   return (
@@ -13,9 +14,8 @@ const Navbar = () => {
           height={32}
         ></Image>
         <div className="flex justify-between items-center gap-8 text-sm">
-          <Link href="#">Home</Link>
-          <Link href="#">Shop</Link>
-          <Link href="#">Cart</Link>
+          <Link href="/">Home</Link>
+          <Link href="/shop">Shop</Link>
         </div>
       </div>
       <div>
@@ -32,9 +32,7 @@ const Navbar = () => {
       </div>
       <div className="flex justify-between items-center gap-8 text-sm text-white">
         <Link href="#">Orders</Link>
-        <button>
-          <CiShoppingCart color="white" size={28} />
-        </button>
+        <ShoppingCartButton />
       </div>
     </nav>
   );
