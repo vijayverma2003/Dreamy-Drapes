@@ -2,8 +2,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { CiSearch } from "react-icons/ci";
 import ShoppingCartButton from "./ShoppingCartButton";
+import { getServerSession } from "next-auth";
+import { NextResponse } from "next/server";
 
-const Navbar = () => {
+const Navbar = async () => {
+  const session = await getServerSession();
+
   return (
     <nav className="flex justify-between items-center px-8 py-4 bg-black">
       <div className="flex items-center gap-10 text-slate-300">
@@ -33,6 +37,13 @@ const Navbar = () => {
       <div className="flex justify-between items-center gap-8 text-sm text-white">
         <Link href="#">Orders</Link>
         <ShoppingCartButton />
+        <Image
+          className="rounded-full"
+          src={session?.user?.image ?? ""}
+          alt="User Profile Image"
+          width={40}
+          height={40}
+        />
       </div>
     </nav>
   );

@@ -6,10 +6,7 @@ import Hero from "./components/Hero";
 import Navbar from "./components/Navbar";
 import authOptions from "./auth/authOptions";
 
-export default async function Home() {
-  const session = await getServerSession(authOptions);
-  console.log(session);
-
+export default function Home() {
   return (
     <main>
       <Hero />
