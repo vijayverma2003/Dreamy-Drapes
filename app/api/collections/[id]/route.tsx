@@ -5,6 +5,20 @@ import { Collection } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const collection = await prisma.collection.findUnique({
+    where: { id: parseInt(params.id) },
+  });
+
+  if (!collection)
+    return NextResponse.json({ error: "Invalid Collection" }, { status: 400 });
+
+  return NextResponse.json(collection);
+}
+
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } }
