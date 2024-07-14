@@ -25,9 +25,10 @@ model User {
   // Optional for WebAuthn support
   Authenticator Authenticator[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  role      Role     @default(USER)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  role      Role       @default(USER)
+  CartItem  CartItem[]
 }
 
 enum Role {
@@ -105,10 +106,37 @@ model Product {
   updatedAt    DateTime    @updatedAt
   collection   Collection? @relation(fields: [collectionId], references: [id])
   collectionId Int?
+  CartItem     CartItem[]
+  OrderItem    OrderItem[]
 }
 
 model Collection {
   id      Int       @id @default(autoincrement())
   name    String    @db.VarChar(256)
   Product Product[]
+}
+
+model CartItem {
+  id        Int     @id @default(autoincrement())
+  userId    String
+  user      User    @relation(fields: [userId], references: [id])
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+}
+
+model Order {
+  id        Int         @id @default(autoincrement())
+  placedAt  DateTime    @default(now())
+  OrderItem OrderItem[]
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int
+  order     Order   @relation(fields: [orderId], references: [id])
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  price     Decimal
 }
