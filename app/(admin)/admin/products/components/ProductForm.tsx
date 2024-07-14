@@ -100,13 +100,14 @@ const ProductForm = ({ collections }: { collections: Collection[] }) => {
           </label>
           <select
             {...register("collectionId", {
-              valueAsNumber: true,
+              setValueAs(value) {
+                if (!isNaN(Number(value))) return Number(value);
+                return null;
+              },
             })}
             className="border text-sm border-zinc-700 px-2 py-2 outline-none w-full rounded-md"
           >
-            <option disabled value={0}>
-              Select Collection...
-            </option>
+            <option value={undefined}>Select Collection...</option>
             {collections.map((collection) => (
               <option key={collection.id} value={collection.id}>
                 {collection.name}

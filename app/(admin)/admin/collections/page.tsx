@@ -21,7 +21,10 @@ const CollectionsPage = async () => {
       </header>
       <div>
         {collections.map((collection) => (
-          <div className="px-4 py-4 bg-zinc-800 bg-opacity-20 border border-zinc-800 rounded-md my-6">
+          <div
+            id={collection.id.toString()}
+            className="px-4 py-4 bg-zinc-800 bg-opacity-20 border border-zinc-800 rounded-md my-6"
+          >
             <p className="text-xs">{collection.name}</p>
             <p className="text-xs mt-2 text-zinc-600">
               Number of Products - {collection.Product.length}
