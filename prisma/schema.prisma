@@ -97,17 +97,24 @@ model Authenticator {
 }
 
 model Product {
-  id           Int         @id @default(autoincrement())
-  name         String      @db.VarChar(256)
-  description  String      @db.VarChar(5120)
-  price        Decimal     @db.Decimal(9, 2)
+  id           Int            @id @default(autoincrement())
+  name         String         @db.VarChar(256)
+  description  String         @db.VarChar(5120)
+  price        Decimal        @db.Decimal(9, 2)
   inventory    Int
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-  collection   Collection? @relation(fields: [collectionId], references: [id])
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  collection   Collection?    @relation(fields: [collectionId], references: [id])
   collectionId Int?
   CartItem     CartItem[]
   OrderItem    OrderItem[]
+  ProductImage ProductImage[]
+}
+
+model ProductImage {
+  productId Int
+  product   Product @relation(references: [id], fields: [productId])
+  public_id Int     @id
 }
 
 model Collection {
