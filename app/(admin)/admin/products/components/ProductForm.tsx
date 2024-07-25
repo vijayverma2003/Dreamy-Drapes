@@ -197,33 +197,7 @@ const ProductForm = ({ collections }: { collections: Collection[] }) => {
             {errors.description?.message}
           </p>
         </div>
-        <div className="grid grid-cols-4 gap-2 place-items-center mb-2">
-          {images.map((image, index) => (
-            <div
-              key={index}
-              className="border border-zinc-700 rounded-lg mb-1.5 relative"
-            >
-              {image ? (
-                <div className="overflow-hidden rounded-lg">
-                  <Image
-                    src={image.toString()}
-                    alt={`Product Image ${index}`}
-                    width={120}
-                    height={120}
-                    className="object-cover w-[120px] h-[120px] overflow-hidden"
-                  />
-                </div>
-              ) : null}
-              <button
-                type="button"
-                onClick={() => handleRemoveImage(index)}
-                className="top-0 right-0 translate-x-1/2 -translate-y-1/2 absolute bg-red-600 rounded-full bg-opacity-50 border border-red-600 border-opacity-25"
-              >
-                <IoIosClose size={16} />
-              </button>
-            </div>
-          ))}
-        </div>
+
         <div>
           <label className="block text-xs mb-2 text-zinc-400" htmlFor="image">
             Product Images

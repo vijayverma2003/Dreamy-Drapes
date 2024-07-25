@@ -7,18 +7,6 @@ export const collectionSchema = z.object({
     .min(1, "Name is required"),
 });
 
-// model Product {
-//   id           Int        @id @default(autoincrement())
-//   name         String     @db.VarChar(256)
-//   description  String     @db.VarChar(5120)
-//   price        Decimal    @db.Decimal(9, 2)
-//   inventory    Int
-//   createdAt    DateTime   @default(now())
-//   updatedAt    DateTime   @updatedAt
-//   collection   Collection @relation(fields: [collectionId], references: [id])
-//   collectionId Int
-// }
-
 export const productSchema = z.object({
   name: z
     .string()
@@ -33,4 +21,8 @@ export const productSchema = z.object({
     .min(0, "Price should be greater than 0"),
   inventory: z.number({ invalid_type_error: "Inventory is required" }),
   collectionId: z.number().optional().nullable(),
+});
+
+export const productImageSchema = z.object({
+  image: z.string(),
 });
