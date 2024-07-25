@@ -1,10 +1,9 @@
 import authOptions from "@/app/auth/authOptions";
 import { productImageSchema } from "@/app/modelSchema";
 import prisma from "@/prisma/client";
+import { v2 as cloudinary } from "cloudinary";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
-import { v2 as cloudinary } from "cloudinary";
-import { ProductImage } from "@prisma/client";
 
 cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
@@ -44,15 +43,20 @@ export async function POST(
       { status: 400 }
     );
 
-  const response = await cloudinary.uploader.upload(body.image);
+  let productImage;
 
-  const productImage = await prisma.productImage.create({
-    data: {
-      publicId: response.public_id,
-      productId: product.id,
-      url: response.url,
-    },
-  });
+  const response = await cloudinary.uploader.upload(body.image);
+  try {
+    productImage = await prisma.productImage.create({
+      data: {
+        publicId: response.public_id,
+        productId: product.id,
+        url: response.url,
+      },
+    });
+  } catch (error) {
+    await cloudinary.uploader.destroy(response.public_id);
+  }
 
   return NextResponse.json(productImage, { status: 201 });
 }

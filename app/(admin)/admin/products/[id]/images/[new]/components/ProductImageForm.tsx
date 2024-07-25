@@ -1,19 +1,19 @@
 "use client";
 
 import Button from "@/app/components/Button";
+import Loader from "@/app/components/Loader";
 import axios, { AxiosError } from "axios";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useRef, useState } from "react";
+import { FaRegCircleCheck } from "react-icons/fa6";
 import { FiArrowRight } from "react-icons/fi";
 import { IoIosClose } from "react-icons/io";
-import { v2 as cloudinary } from "cloudinary";
-import { ProductImage } from "@prisma/client";
-import Loader from "@/app/components/Loader";
-import { FaRegCircleCheck } from "react-icons/fa6";
+import { SlCloudUpload } from "react-icons/sl";
 
 const ProductImageForm = ({ productId }: { productId: number }) => {
   const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [error, setError] = useState("");
   const [images, setImages] = useState<
     {
@@ -40,10 +40,7 @@ const ProductImageForm = ({ productId }: { productId: number }) => {
     });
 
     try {
-      // await axios.post(`/api/products/${productId}/images/`, {
-      //   image,
-      // });
-      await new Promise<void>((resolve) => setTimeout(resolve, 3 * 1000));
+      await axios.post(`/api/products/${productId}/images/`, images[index]);
     } catch (error) {
       if (
         error instanceof AxiosError &&
@@ -58,7 +55,6 @@ const ProductImageForm = ({ productId }: { productId: number }) => {
         return images;
       });
 
-      console.log(index, "catch");
       return;
     }
 
@@ -67,13 +63,11 @@ const ProductImageForm = ({ productId }: { productId: number }) => {
       images[index] = { uploading: false, failed: false };
       return images;
     });
-
-    console.log(index);
   };
 
   const handleSubmit = async () => {
     for (let i = 0; i < images.length; i++) {
-      await uploadImage(i);
+      uploadImage(i);
     }
   };
 
@@ -131,60 +125,73 @@ const ProductImageForm = ({ productId }: { productId: number }) => {
 
       <form className="my-8 flex flex-col gap-8 w-full max-w-lg">
         <div>
-          <label className="block text-xs mb-2 text-zinc-400" htmlFor="image">
-            Product Images
-          </label>
-          <div className="grid grid-cols-4 gap-2 place-items-center mb-2">
-            {images.map((image, index) => (
-              <div key={index} className="relative">
-                <div className="border border-zinc-700 rounded-lg mb-1.5 relative overflow-hidden">
-                  <div className="overflow-hidden rounded-lg z-0">
-                    {uploadingImages[index] && (
-                      <div
-                        className={`w-full h-full bg-black bg-opacity-80 z-10 absolute flex justify-center items-center`}
-                      >
-                        {uploadingImages[index].uploading && <Loader />}
-
-                        {!uploadingImages[index].uploading &&
-                          uploadingImages[index].failed && (
-                            <p className="text-xs text-red-500">Failed</p>
-                          )}
-
-                        {!uploadingImages[index].uploading &&
-                          !uploadingImages[index].failed && (
-                            <FaRegCircleCheck color="green" size={24} />
-                          )}
+          {images.length > 0 && (
+            <div>
+              <label
+                className="block text-xs mb-2 text-zinc-400"
+                htmlFor="image"
+              >
+                Product Images
+              </label>
+              <div className="grid grid-cols-4 gap-2 place-items-center mb-2">
+                {images.map((image, index) => (
+                  <div key={index} className="relative">
+                    <div className="border border-zinc-700 rounded-lg mb-1.5 relative overflow-hidden">
+                      <div className="overflow-hidden rounded-lg z-0">
+                        {uploadingImages[index] && (
+                          <div
+                            className={`w-full h-full bg-black bg-opacity-80 z-10 absolute flex justify-center items-center`}
+                          >
+                            {uploadingImages[index].uploading && <Loader />}
+                            {!uploadingImages[index].uploading &&
+                              uploadingImages[index].failed && (
+                                <p className="text-xs text-red-500">Failed</p>
+                              )}
+                            {!uploadingImages[index].uploading &&
+                              !uploadingImages[index].failed && (
+                                <FaRegCircleCheck color="green" size={24} />
+                              )}
+                          </div>
+                        )}
+                        {image ? (
+                          <Image
+                            src={image.image.toString()}
+                            alt={`Product Image ${index}`}
+                            width={120}
+                            height={120}
+                            className="object-cover w-[120px] h-[120px]"
+                          />
+                        ) : null}
                       </div>
-                    )}
-
-                    {image ? (
-                      <Image
-                        src={image.image.toString()}
-                        alt={`Product Image ${index}`}
-                        width={120}
-                        height={120}
-                        className="object-cover w-[120px] h-[120px]"
-                      />
-                    ) : null}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveImage(index)}
+                      className="top-1 right-1 z-20 translate-x-1/2 -translate-y-1/2 absolute bg-red-600 rounded-full bg-opacity-50 border border-red-600 border-opacity-25"
+                    >
+                      <IoIosClose size={16} />
+                    </button>
                   </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => handleRemoveImage(index)}
-                  className="top-1 right-1 z-20 translate-x-1/2 -translate-y-1/2 absolute bg-red-600 rounded-full bg-opacity-50 border border-red-600 border-opacity-25"
-                >
-                  <IoIosClose size={16} />
-                </button>
+                ))}
               </div>
-            ))}
-          </div>
+            </div>
+          )}
+          <Button
+            type="button"
+            label="Select Images"
+            Component={SlCloudUpload}
+            onClick={() => {
+              fileInputRef.current?.click();
+            }}
+          />
           <input
+            ref={fileInputRef}
             multiple
             type="file"
             name="image"
             id="image"
             onChange={handleImageChange}
-            className="border text-sm border-zinc-700 px-2 py-2 outline-none w-full rounded-md"
+            className="border text-sm border-zinc-700 px-2 py-2 outline-none w-full rounded-md hidden"
           />
         </div>
       </form>

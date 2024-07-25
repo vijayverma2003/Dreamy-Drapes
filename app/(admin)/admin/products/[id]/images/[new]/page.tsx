@@ -1,4 +1,3 @@
-import React from "react";
 import ProductImageForm from "./components/ProductImageForm";
 
 const page = ({ params }: { params: { id: string } }) => {

@@ -1,6 +1,5 @@
-import React, { ButtonHTMLAttributes, ReactNode } from "react";
+import { ButtonHTMLAttributes } from "react";
 import { IconType } from "react-icons";
-import { GoPlus } from "react-icons/go";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   label: string;

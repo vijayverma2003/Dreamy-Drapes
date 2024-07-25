@@ -1,17 +1,15 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { productSchema } from "@/app/modelSchema";
-import { useForm } from "react-hook-form";
 import Button from "@/app/components/Button";
-import { FiArrowRight } from "react-icons/fi";
+import { productSchema } from "@/app/modelSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Collection } from "@prisma/client";
 import axios, { AxiosError } from "axios";
-import { ChangeEvent, useState } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
-import { IoIosClose } from "react-icons/io";
+import { ChangeEvent, useState } from "react";
+import { useForm } from "react-hook-form";
+import { FiArrowRight } from "react-icons/fi";
+import { z } from "zod";
 
 type ProductFormData = z.infer<typeof productSchema>;
 
