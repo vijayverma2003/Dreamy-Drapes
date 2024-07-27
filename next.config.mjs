@@ -1,6 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  images: { domains: ["demo.vercel.store", "lh3.googleusercontent.com"] },
+  images: {
+    domains: [
+      "demo.vercel.store",
+      "lh3.googleusercontent.com",
+      "res.cloudinary.com",
+    ],
+  },
   webpack(config) {
     config.resolve.fallback = {
       ...config.resolve.fallback,
