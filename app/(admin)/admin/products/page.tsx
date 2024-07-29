@@ -19,7 +19,8 @@ const ProductsPage = async () => {
       </header>
       <div>
         {products.map((product) => (
-          <div
+          <Link
+            href={`/admin/products/${product.id}`}
             id={product.id.toString()}
             className="px-4 py-4 bg-zinc-800 bg-opacity-20 border border-zinc-800 rounded-md my-6 flex items-center justify-between"
           >
@@ -37,7 +38,7 @@ const ProductsPage = async () => {
                 {product.inventory} units
               </p>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </section>

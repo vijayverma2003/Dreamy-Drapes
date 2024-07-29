@@ -16,7 +16,6 @@ type ProductFormData = z.infer<typeof productSchema>;
 const ProductForm = ({ collections }: { collections: Collection[] }) => {
   const router = useRouter();
   const [error, setError] = useState("");
-  const [images, setImages] = useState<(string | ArrayBuffer | null)[]>([]);
   const {
     register,
     handleSubmit,
@@ -26,35 +25,10 @@ const ProductForm = ({ collections }: { collections: Collection[] }) => {
   });
 
   const onSubmit = handleSubmit(async (data) => {
-    const uploadsPublicIds: string[] = [];
-
     try {
-      for (let image of images) {
-        if (!image) continue;
-
-        const blob = new Blob([image]);
-
-        const formData = new FormData();
-        formData.set("file", blob);
-        formData.set(
-          "upload_preset",
-          process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_UPLOAD_PRESET!
-        );
-
-        try {
-          await axios.post(
-            `https://api.cloudinary.com/v1_1/${process.env
-              .NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!}/image/upload/`,
-            formData
-          );
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    } catch (error) {}
-    try {
-      await axios.post("/api/products", data);
-      router.push("/admin/products");
+      const { data: product } = await axios.post("/api/products", data);
+      router.push(`/admin/products/${product.id}/images/new`);
+      router.refresh();
     } catch (error) {
       if (
         error instanceof AxiosError &&
@@ -64,40 +38,6 @@ const ProductForm = ({ collections }: { collections: Collection[] }) => {
       else setError("An unexpected error occured");
     }
   });
-
-  const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
-    event.preventDefault();
-
-    if (!event.target.files) return;
-
-    if (images.length > 10) {
-      setError("You can add maximum 10 image for a product");
-      return;
-    }
-
-    const allowedFileTypes = ["image/png", "image/jpeg", "image/jpg"];
-
-    for (let file of event.target.files) {
-      if (!allowedFileTypes.includes(file.type)) {
-        setImages((images) => [...images, null]);
-        return;
-      }
-
-      const fileReader = new FileReader();
-
-      fileReader.onloadend = () => {
-        setImages((images) => [...images, fileReader.result]);
-      };
-
-      fileReader.readAsDataURL(file);
-    }
-  };
-
-  const handleRemoveImage = (index: number) => {
-    const productImages = [...images];
-    productImages.splice(index, 1);
-    setImages(productImages);
-  };
 
   return (
     <section className="flex justify-center flex-col w-full min-w-[400px]">
@@ -194,20 +134,6 @@ const ProductForm = ({ collections }: { collections: Collection[] }) => {
           <p className="text-[10px] mt-2 text-red-600">
             {errors.description?.message}
           </p>
-        </div>
-
-        <div>
-          <label className="block text-xs mb-2 text-zinc-400" htmlFor="image">
-            Product Images
-          </label>
-          <input
-            multiple
-            type="file"
-            name="image"
-            id="image"
-            onChange={handleImageChange}
-            className="border text-sm border-zinc-700 px-2 py-2 outline-none w-full rounded-md"
-          />
         </div>
       </form>
     </section>

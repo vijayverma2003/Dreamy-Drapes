@@ -5,6 +5,13 @@ import { Product } from "@prisma/client";
 import { Decimal } from "@prisma/client/runtime/library";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
+import { v2 as cloudinary } from "cloudinary";
+
+cloudinary.config({
+  cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_CLOUD_API_KEY,
+  api_secret: process.env.CLOUDINARY_CLOUD_API_SECRET,
+});
 
 export async function GET(
   request: NextRequest,
@@ -96,10 +103,21 @@ export async function DELETE(
 
   const product = await prisma.product.findUnique({
     where: { id: parseInt(params.id) },
+    include: { ProductImage: true },
   });
 
   if (!product)
     return NextResponse.json({ error: "Invalid Product" }, { status: 400 });
+
+  for (let image of product.ProductImage) {
+    try {
+      if (image.publicId) await cloudinary.uploader.destroy(image.publicId);
+    } catch (error) {
+      console.log("Error while deleting images from cloudinary", error);
+    }
+  }
+
+  await prisma.productImage.deleteMany({ where: { productId: product.id } });
 
   await prisma.product.delete({
     where: { id: product.id },
