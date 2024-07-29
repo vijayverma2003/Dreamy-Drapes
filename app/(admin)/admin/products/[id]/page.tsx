@@ -1,7 +1,8 @@
 import Button from "@/app/components/Button";
 import prisma from "@/prisma/client";
-import Image from "next/image";
-import { MdDeleteOutline } from "react-icons/md";
+import { redirect } from "next/navigation";
+import ProductImages from "../components/ProductImages";
+import AddImagesButton from "./components/AddImagesButton";
 
 const ProductViewPage = async ({ params }: { params: { id: string } }) => {
   const product = await prisma.product.findUnique({
@@ -17,6 +18,7 @@ const ProductViewPage = async ({ params }: { params: { id: string } }) => {
         <h3 className="text-lg font-extrabold">{product.name}</h3>
 
         <div className="flex items-center gap-4">
+          <AddImagesButton id={params.id} />
           <Button label="Edit" />
           <Button className="bg-red-600" label="Delete" />
         </div>
@@ -40,32 +42,7 @@ const ProductViewPage = async ({ params }: { params: { id: string } }) => {
 
       <h1 className="my-12 font-extrabold">Product Images</h1>
 
-      <div
-        className={`grid grid-cols-5 gap-4 grid-rows-${Math.ceil(
-          product.ProductImage.length / 4
-        )} grid-rows-10`}
-      >
-        {product.ProductImage.map((image) =>
-          image?.url ? (
-            <div key={image.id} className="relative">
-              <div className="absolute top-3 right-3">
-                <button className="p-1 bg-red-700 bg-opacity-30 rounded-full">
-                  <MdDeleteOutline size={20} color="red" />
-                </button>
-              </div>
-              <Image
-                src={image.url}
-                width={200}
-                height={200}
-                alt="product-image"
-                className="product-image max-h-[200px] max-w-[200px] w-full h-full object-cover"
-              />
-            </div>
-          ) : (
-            <div />
-          )
-        )}
-      </div>
+      <ProductImages images={product.ProductImage} />
     </section>
   );
 };

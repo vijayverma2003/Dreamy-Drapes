@@ -27,48 +27,49 @@ const ProductImageForm = ({ productId }: { productId: number }) => {
     {
       uploading: boolean;
       failed: boolean;
+      uploaded: boolean;
     }[]
   >([]);
 
   const uploadImage = async (index: number) => {
-    console.log(index);
-
-    setUploadingImages((prevImages) => {
-      const images = [...prevImages];
-      images[index] = { uploading: true, failed: false };
-      return images;
-    });
-
-    try {
-      await axios.post(`/api/products/${productId}/images/`, images[index]);
-    } catch (error) {
-      if (
-        error instanceof AxiosError &&
-        error.response?.data.error === "string"
-      )
-        setError(error.response.data.error);
-      else setError("An unexpected error occured");
-
+    if (!uploadingImages[index] || !uploadingImages[index].uploaded) {
       setUploadingImages((prevImages) => {
         const images = [...prevImages];
-        images[index] = { uploading: false, failed: true };
+        images[index] = { uploading: true, failed: false, uploaded: false };
         return images;
       });
 
-      return;
-    }
+      try {
+        await axios.post(`/api/products/${productId}/images/`, images[index]);
+        router.push(`/admin/products/${productId}/`);
+        router.refresh();
+      } catch (error) {
+        if (
+          error instanceof AxiosError &&
+          error.response?.data.error === "string"
+        )
+          setError(error.response.data.error);
+        else setError("An unexpected error occured");
 
-    setUploadingImages((prevImages) => {
-      const images = [...prevImages];
-      images[index] = { uploading: false, failed: false };
-      return images;
-    });
+        setUploadingImages((prevImages) => {
+          const images = [...prevImages];
+          images[index] = { uploading: false, failed: true, uploaded: false };
+          return images;
+        });
+
+        return;
+      }
+
+      setUploadingImages((prevImages) => {
+        const images = [...prevImages];
+        images[index] = { uploading: false, failed: false, uploaded: true };
+        return images;
+      });
+    }
   };
 
   const handleSubmit = async () => {
-    for (let i = 0; i < images.length; i++) {
-      uploadImage(i);
-    }
+    for (let i = 0; i < images.length; i++) uploadImage(i);
   };
 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
