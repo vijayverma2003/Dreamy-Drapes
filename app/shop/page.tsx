@@ -1,35 +1,41 @@
+import prisma from "@/prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-const page = () => {
+const page = async () => {
+  const products = await prisma.product.findMany({
+    include: { ProductImage: true },
+  });
+
   return (
-    <section className="grid grid-cols-3 place-items-center mx-auto gap-8 container">
-      {Array(10)
-        .fill(1)
-        .map((item) => (
-          <div className="flex flex-col gap-4">
-            <div className="border border-zinc-700 rounded-sm relative">
+    <section className="products-grid place-items-center mx-auto gap-8 container">
+      {products.map((item) => (
+        <div className="flex flex-col items-center gap-4 w-full h-full">
+          <div className="border border-zinc-700 h-full rounded-sm relative w-full min-h-[400px] flex-1 flex justify-center items-center">
+            {item.ProductImage[0] && item.ProductImage[0].url ? (
               <Image
-                src={
-                  "https://demo.vercel.store/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0754%2F3727%2F7491%2Ffiles%2Fbaby-onesie-white-1.png%3Fv%3D1690002631&w=1920&q=75"
-                }
+                src={item.ProductImage[0].url}
                 alt="Product Image"
                 width={400}
                 height={400}
+                className="h-[400px] object-cover"
               />
-              <Link
-                href={"#"}
-                className="text-xs absolute bottom-4 left-4  border border-zinc-700 rounded-3xl pl-4 py-3 backdrop-blur-2xl"
-              >
-                Product Name
-                <span className="px-6 py-3 ml-4 rounded-full bg-blue-600 font-bold">
-                  $39.9
-                </span>
-              </Link>
-            </div>
+            ) : (
+              <p className="">Image Not found</p>
+            )}
+            <Link
+              href={"#"}
+              className="text-xs absolute bottom-4 left-4  border border-zinc-700 rounded-3xl pl-4 py-3 backdrop-blur-2xl"
+            >
+              {item.name}
+              <span className="px-6 py-3 ml-4 rounded-full bg-blue-600 font-bold">
+                $ {item.price.toNumber()}
+              </span>
+            </Link>
           </div>
-        ))}
+        </div>
+      ))}
     </section>
   );
 };

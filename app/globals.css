@@ -8,6 +8,15 @@
   }
 }
 
+html {
+  height: 100%;
+}
+
 body {
   background-color: rgb(10, 10, 10);
+}
+
+.products-grid {
+  display: grid;
+  grid-template: repeat(1, 1fr) / repeat(3, 1fr);
 }
