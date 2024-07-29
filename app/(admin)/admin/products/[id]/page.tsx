@@ -1,8 +1,8 @@
 import Button from "@/app/components/Button";
 import prisma from "@/prisma/client";
-import { redirect } from "next/navigation";
 import ProductImages from "../components/ProductImages";
 import AddImagesButton from "./components/AddImagesButton";
+import DeleteProductButton from "./components/DeleteProductButton";
 
 const ProductViewPage = async ({ params }: { params: { id: string } }) => {
   const product = await prisma.product.findUnique({
@@ -20,7 +20,7 @@ const ProductViewPage = async ({ params }: { params: { id: string } }) => {
         <div className="flex items-center gap-4">
           <AddImagesButton id={params.id} />
           <Button label="Edit" />
-          <Button className="bg-red-600" label="Delete" />
+          <DeleteProductButton id={params.id} />
         </div>
       </header>
 
