@@ -10,7 +10,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 const Button = ({ label, Component, className, ...props }: ButtonProps) => {
   return (
     <button
-      className={`bg-blue-600 px-4 py-3 text-xs rounded-full flex items-center gap-2 ${className}`}
+      className={`btn btn-info px-5 py-2 text-xs rounded-full flex items-center gap-2 ${className}`}
       {...props}
     >
       <span>{label}</span> {Component ? <Component size={16} /> : null}

@@ -29,7 +29,14 @@ const config: Config = {
   },
 
   daisyui: {
-    themes: ["black"],
+    themes: [
+      {
+        black: {
+          ...require("daisyui/src/theming/themes")["black"],
+          info: "#2563eb",
+        },
+      },
+    ],
   },
   plugins: [require("daisyui")],
 };

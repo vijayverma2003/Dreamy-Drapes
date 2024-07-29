@@ -17,7 +17,11 @@ const DeleteProductButton = ({ id }: { id: string }) => {
   };
 
   return (
-    <Button onClick={handleDelete} className="bg-red-600" label="Delete" />
+    <Button
+      onClick={handleDelete}
+      className="btn-error text-white"
+      label="Delete"
+    />
   );
 };
 

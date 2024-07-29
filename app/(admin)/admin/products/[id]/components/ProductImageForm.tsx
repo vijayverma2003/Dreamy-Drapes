@@ -178,6 +178,7 @@ const ProductImageForm = ({ productId }: { productId: number }) => {
             </div>
           )}
           <Button
+            className="m-auto"
             type="button"
             label="Select Images"
             Component={SlCloudUpload}
